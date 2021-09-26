@@ -1,3 +1,4 @@
+const {initializeConncetion} = require('./dbConnection/db.connect')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -7,7 +8,7 @@ app.use(bodyParser.json())
 app.use(cors())
 
 const PORT = process.env.PORT || 8000;
-
+initializeConncetion()
 app.use('/' , (req , res) => {
     res.json({success : true , message : 'this is an API for Sport Connect'})
 })
