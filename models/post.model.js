@@ -14,7 +14,7 @@ const PostSchema = new Schema(
     },
     likes: [
       {
-        userId: {
+        _id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
         },
@@ -22,7 +22,7 @@ const PostSchema = new Schema(
     ],
     comments: [
       {
-        userId: {
+        _id: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
         },
@@ -31,7 +31,7 @@ const PostSchema = new Schema(
     ],
   },
   {
-    timestamps: { currentTime: () => Math.floor(Date.now() / 1000) },
+    timestamps: true,
   }
 );
 

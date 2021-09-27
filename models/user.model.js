@@ -34,7 +34,7 @@ const UserSchema = new Schema({
   profilePicture: String,
   posts: [
     {
-      postId: {
+      _id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
       },
@@ -42,7 +42,7 @@ const UserSchema = new Schema({
   ],
   followers: [
     {
-      uid: {
+      _id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
@@ -50,7 +50,7 @@ const UserSchema = new Schema({
   ],
   following: [
     {
-      uid: {
+      _id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
@@ -58,7 +58,7 @@ const UserSchema = new Schema({
   ],
   notification: [
     {
-      uid: {
+      _id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
