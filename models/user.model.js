@@ -27,11 +27,11 @@ const UserSchema = new Schema({
       message: (props) => `${props.value} is not a valid Email Id`,
     },
   },
-  profilePicture: String,
   password: {
     type: String,
     required: [true, "password is required"],
   },
+  profilePicture: String,
   posts: [
     {
       postId: {

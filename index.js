@@ -1,25 +1,34 @@
-const {initializeConncetion} = require('./dbConnection/db.connect')
-const express = require('express')
-const bodyParser = require('body-parser')
-const cors = require('cors')
-require('dotenv').config()
-const app = express()
-app.use(bodyParser.json())
-app.use(cors())
+const { initializeConncetion } = require("./dbConnection/db.connect");
+const auth = require("./routes/auth.route");
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+require("dotenv").config();
+const app = express();
+app.use(bodyParser.json());
+app.use(cors());
 
 const PORT = process.env.PORT || 8000;
-initializeConncetion()
-app.use('/' , (req , res) => {
-    res.json({success : true , message : 'this is an API for Sport Connect'})
-})
+initializeConncetion();
 
+app.use("/auth", auth);
 
-app.use((req , res) => {
-    res.status(404).json({success : false  , message : 'page not found'})
-})
+app.use("/", (req, res) => {
+  res.json({ success: true, message: "this is an API for Sport Connect" });
+});
 
-app.use((err , req ,res , next) => {
-    console.error(err.stack)
-    res.status(500).json({success : false , message : 'something went wrong' , error : err.message})
-})
-app.listen(PORT , () => console.log('server started at port' , PORT))
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: "page not found" });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res
+    .status(500)
+    .json({
+      success: false,
+      message: "something went wrong",
+      error: err.message,
+    });
+});
+app.listen(PORT, () => console.log("server started at port", PORT));
