@@ -7,7 +7,6 @@ const { extend } = require("lodash");
 const { verifyToken } = require("../middleware/verifytoken");
 const { User } = require("../models/user.model");
 const { Post } = require("../models/post.model");
-const { Feed } = require("../models/feeds.model");
 const router = express.Router();
 
 router.use(verifyToken);
@@ -18,33 +17,24 @@ router
     const { userId } = req;
     try {
       let user = await User.findById(userId);
-      let feeds = await Feed.findById(userId);
       if (user) {
         user.password = undefined;
         user.email = undefined;
         user.__v = undefined;
+        user.notification = undefined;
         user = await user
           .populate("posts._id")
-          .populate("followers._id")
-          .populate("following._id")
-          .populate("notification._id")
+          .populate("followers._id", "userName profilePicture")
+          .populate("following._id", "userName profilePicture")
           .execPopulate();
-        feeds = await feeds.populate("feeds._id").execPopulate();
-        const NormalizedFeeds = feeds.feeds.map((item) => item._id._doc);
-        console.log(user);
         const NormalizedPost = user.posts.map((item) => item._id._doc);
         const NormalizedFollowers = user.followers.map((item) => item._id._doc);
         const NormalizedFollowing = user.following.map((item) => item._id._doc);
-        const NormalizedNotification = user.notification.map(
-          (item) => item._id._doc
-        );
         const UserDetails = {
           ...user._doc,
           posts: NormalizedPost,
           followers: NormalizedFollowers,
           following: NormalizedFollowing,
-          notification: NormalizedNotification,
-          feeds: NormalizedFeeds,
         };
         return res.status(200).json({ success: true, user: UserDetails });
       }
@@ -78,10 +68,14 @@ router.route("/:userId").get(async (req, res) => {
   try {
     let user = await User.findById(userId);
     if (user) {
+      user.password = undefined;
+      user.email = undefined;
+      user.__v = undefined;
+      user.notification = undefined;
       user = await user
         .populate("posts._id")
-        .populate("followers._id")
-        .populate("following._id")
+        .populate("followers._id", "userName profilePicture")
+        .populate("following._id", "userName profilePicture")
         .execPopulate();
       const NormalizedPost = user.posts.map((item) => item._id._doc);
       const NormalizedFollowers = user.followers.map((item) => item._id._doc);

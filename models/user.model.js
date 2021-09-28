@@ -62,9 +62,11 @@ const UserSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
-      type: String,
-      enum: ["Like", "Comment"],
-      required: true,
+      notificationType: {
+        type: String,
+        enum: ["Like", "Comment"],
+        required: true,
+      },
     },
   ],
 });

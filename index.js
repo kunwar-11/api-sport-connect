@@ -1,6 +1,7 @@
 const { initializeConncetion } = require("./dbConnection/db.connect");
 const auth = require("./routes/auth.route");
 const user = require("./routes/user.route");
+const post = require("./routes/post.route");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -14,6 +15,7 @@ initializeConncetion();
 
 app.use("/auth", auth);
 app.use("/user", user);
+app.use("/post", post);
 
 app.use("/", (req, res) => {
   res.json({ success: true, message: "this is an API for Sport Connect" });
