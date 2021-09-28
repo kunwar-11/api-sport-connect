@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const FeedSchema = new Schema({
-  uid: {
+  _id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  posts: [
+  feeds: [
     {
-      postId: {
+      _id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
       },

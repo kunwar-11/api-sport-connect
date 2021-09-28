@@ -7,6 +7,7 @@ const { extend } = require("lodash");
 const { verifyToken } = require("../middleware/verifytoken");
 const { User } = require("../models/user.model");
 const { Post } = require("../models/post.model");
+const { Feed } = require("../models/feeds.model");
 const router = express.Router();
 
 router.use(verifyToken);
@@ -17,16 +18,35 @@ router
     const { userId } = req;
     try {
       let user = await User.findById(userId);
+      let feeds = await Feed.findById(userId);
       if (user) {
         user.password = undefined;
         user.email = undefined;
-        //   user = await user
-        //     .populate("posts.postId")
-        //     .populate("followers.uid")
-        //     .populate("following.uid")
-        //     .execPopulate();
-
-        return res.status(200).json({ success: true, user });
+        user.__v = undefined;
+        user = await user
+          .populate("posts._id")
+          .populate("followers._id")
+          .populate("following._id")
+          .populate("notification._id")
+          .execPopulate();
+        feeds = await feeds.populate("feeds._id").execPopulate();
+        const NormalizedFeeds = feeds.feeds.map((item) => item._id._doc);
+        console.log(user);
+        const NormalizedPost = user.posts.map((item) => item._id._doc);
+        const NormalizedFollowers = user.followers.map((item) => item._id._doc);
+        const NormalizedFollowing = user.following.map((item) => item._id._doc);
+        const NormalizedNotification = user.notification.map(
+          (item) => item._id._doc
+        );
+        const UserDetails = {
+          ...user._doc,
+          posts: NormalizedPost,
+          followers: NormalizedFollowers,
+          following: NormalizedFollowing,
+          notification: NormalizedNotification,
+          feeds: NormalizedFeeds,
+        };
+        return res.status(200).json({ success: true, user: UserDetails });
       }
       return res
         .status(404)
@@ -52,6 +72,21 @@ router
       res.status(400).json({ success: false, message: error.message });
     }
   });
+
+router.route("/:userId").get(async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findById(userId);
+    if (user) {
+      return res.status(200).json({ success: true, user });
+    }
+    return res
+      .status(404)
+      .json({ success: false, message: "User Not Found!!!" });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
 
 router.route("/follow").post(async (req, res) => {
   const { userId } = req;

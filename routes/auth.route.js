@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models/user.model");
+const { Feed } = require("../models/feeds.model");
 
 router.route("/signup").post(async (req, res) => {
   const user = req.body;
@@ -25,6 +26,11 @@ router.route("/signup").post(async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     NewUser.password = await bcrypt.hash(NewUser.password, salt);
     await NewUser.save();
+    const NewFeed = new Feed({
+      _id: NewUser._id,
+      feeds: [],
+    });
+    await NewFeed.save();
     res.status(201).json({ success: true, user: NewUser });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
