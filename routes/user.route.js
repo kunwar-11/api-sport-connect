@@ -76,9 +76,23 @@ router
 router.route("/:userId").get(async (req, res) => {
   const { userId } = req.params;
   try {
-    const user = await User.findById(userId);
+    let user = await User.findById(userId);
     if (user) {
-      return res.status(200).json({ success: true, user });
+      user = await user
+        .populate("posts._id")
+        .populate("followers._id")
+        .populate("following._id")
+        .execPopulate();
+      const NormalizedPost = user.posts.map((item) => item._id._doc);
+      const NormalizedFollowers = user.followers.map((item) => item._id._doc);
+      const NormalizedFollowing = user.following.map((item) => item._id._doc);
+      const UserDetails = {
+        ...user._doc,
+        posts: NormalizedPost,
+        followers: NormalizedFollowers,
+        following: NormalizedFollowing,
+      };
+      return res.status(200).json({ success: true, user: UserDetails });
     }
     return res
       .status(404)
