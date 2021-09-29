@@ -56,8 +56,9 @@ router.route("/:postId/updateLike").post(async (req, res) => {
         post.likes.push({ _id: userId });
         if (post.uid.toString() !== userId.toString())
           user.notification.push({
-            _id: userId,
+            uid: userId,
             notificationType: "Like",
+            pid: postId,
           });
         await user.save();
       }
@@ -85,8 +86,9 @@ router.route("/:postId/addComment").post(async (req, res) => {
       await post.save();
       if (post.uid.toString() !== userId.toString()) {
         user.notification.push({
-          _id: userId,
+          uid: userId,
           notificationType: "Comment",
+          pid: postId,
         });
         await user.save();
       }

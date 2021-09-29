@@ -58,7 +58,7 @@ const UserSchema = new Schema({
   ],
   notification: [
     {
-      _id: {
+      uid: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
@@ -66,6 +66,10 @@ const UserSchema = new Schema({
         type: String,
         enum: ["Like", "Comment"],
         required: true,
+      },
+      pid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
       },
     },
   ],
