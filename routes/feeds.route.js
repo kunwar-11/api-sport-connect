@@ -15,8 +15,6 @@ router.route("/").get(async (req, res) => {
     let feeds = await Feed.findOne({ _id: userId });
     let posts = await Post.find({});
     let { following } = await User.findById(userId);
-    console.log("before", posts);
-    console.log(following);
     let Newposts = posts.map((item) => {
       if (
         following.some((each) => each._id.toString() == item.uid.toString())
@@ -26,7 +24,6 @@ router.route("/").get(async (req, res) => {
       return null;
     });
     Newposts = Newposts.filter((each) => each !== null);
-    console.log("after", Newposts);
     feeds.feeds = Newposts;
     await feeds.save();
     feeds = await feeds.populate("feeds._id").execPopulate();

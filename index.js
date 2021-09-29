@@ -3,6 +3,7 @@ const auth = require("./routes/auth.route");
 const user = require("./routes/user.route");
 const post = require("./routes/post.route");
 const feeds = require("./routes/feeds.route");
+const notification = require("./routes/notification.route");
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -18,6 +19,7 @@ app.use("/auth", auth);
 app.use("/user", user);
 app.use("/post", post);
 app.use("/feeds", feeds);
+app.use("/notification", notification);
 
 app.use("/", (req, res) => {
   res.json({ success: true, message: "this is an API for Sport Connect" });

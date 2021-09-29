@@ -69,7 +69,7 @@ const UserSchema = new Schema({
       },
       pid: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Post",
       },
     },
   ],
