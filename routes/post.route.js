@@ -50,7 +50,9 @@ router.route("/:postId/updateLike").post(async (req, res) => {
     const post = await Post.findById(postId);
     const user = await User.findById(post.uid);
     if (post) {
-      if (post.likes.some((each) => each._id === userId.toString())) {
+      if (
+        post.likes.some((each) => each._id.toString() === userId.toString())
+      ) {
         post.likes.pull({ _id: userId });
       } else {
         post.likes.push({ _id: userId });
@@ -112,7 +114,6 @@ router.route("/:postId/addComment").post(async (req, res) => {
 router
   .route("/:postId/:commentId")
   .delete(async (req, res) => {
-    const { userId } = req;
     const { postId, commentId } = req.params;
     try {
       const post = await Post.findById(postId);
