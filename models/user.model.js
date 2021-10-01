@@ -30,10 +30,12 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: [true, "password is required"],
+  },
+  profilePicture: {
+    type: String,
     default:
       "https://i.ibb.co/B2tYKC7/Picture-profile-icon-Male-icon-Human-or-people-sign-and-symbol-Vector-illustration.jpg",
   },
-  profilePicture: String,
   posts: [
     {
       _id: {
