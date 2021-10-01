@@ -17,7 +17,6 @@ router.route("/signup").post(async (req, res) => {
     }
     const NewUser = new User({
       ...user,
-      profilePicture: "",
       posts: [],
       followers: [],
       following: [],
