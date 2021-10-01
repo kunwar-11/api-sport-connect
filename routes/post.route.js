@@ -99,6 +99,7 @@ router.route("/:postId/addComment").post(async (req, res) => {
         postId,
         userName: commentedUser.userName,
         profilePicture: commentedUser.profilePicture,
+        text,
         userId,
         _id: post.comments[post.comments.length - 1]._id,
       });
