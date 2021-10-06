@@ -49,6 +49,7 @@ router.route("/login").post(async (req, res) => {
         res.status(200).json({
           firstName: user.firstName,
           lastName: user.lastName,
+          profilePicture: user.profilePicture,
           token,
           userId: user._id,
         });
