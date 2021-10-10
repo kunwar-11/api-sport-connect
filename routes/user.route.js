@@ -138,6 +138,27 @@ router.route("/unfollow").post(async (req, res) => {
   }
 });
 
+router.route("/removefollower").post(async (req, res) => {
+  let { userId } = req;
+  let { removedUserId } = req.body;
+  try {
+    let user = await User.findById(userId);
+    let removedUser = await User.findById(removedUserId);
+    if (user && removedUser) {
+      user.followers.pull({ _id: removedUserId });
+      removedUser.following.pull({ _id: userId });
+      await user.save();
+      await removedUser.save();
+      return res.status(201).json({ success: true, removedUserId });
+    }
+    return res
+      .status(404)
+      .json({ success: false, message: "User not found!!" });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
 router.route("/posts").post(async (req, res) => {
   const { userId } = req;
   const postDetails = req.body;
