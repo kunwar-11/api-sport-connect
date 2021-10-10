@@ -14,6 +14,7 @@ router.route("/").get(async (req, res) => {
   try {
     let feeds = await Feed.findOne({ _id: userId });
     let posts = await Post.find({});
+    let users = await User.find({});
     let { following } = await User.findById(userId);
     let Newposts = posts.map((item) => {
       if (
@@ -24,11 +25,17 @@ router.route("/").get(async (req, res) => {
       return null;
     });
     Newposts = Newposts.filter((each) => each !== null);
+    console.log(Newposts);
     feeds.feeds = Newposts;
     await feeds.save();
     feeds = await feeds.populate("feeds._id").execPopulate();
     const NormalizedFeed = feeds.feeds.map((each) => each._id._doc);
-    res.status(200).json({ success: true, feeds: NormalizedFeed });
+    const NewFeeds = NormalizedFeed.map((item) => ({
+      ...item,
+      user: users.find((each) => each._id.toString() == item.uid.toString()),
+      uid: undefined,
+    }));
+    res.status(200).json({ success: true, feeds: NewFeeds });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
