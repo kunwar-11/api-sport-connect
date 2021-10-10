@@ -37,7 +37,6 @@ router.route("/").get(async (req, res) => {
       return null;
     });
     Newposts = Newposts.filter((each) => each !== null);
-    console.log(Newposts);
     feeds.feeds = Newposts;
     await feeds.save();
     feeds = await feeds.populate("feeds._id").execPopulate();
