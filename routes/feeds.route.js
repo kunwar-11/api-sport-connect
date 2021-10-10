@@ -9,6 +9,18 @@ const { User } = require("../models/user.model");
 
 router.use(verifyToken);
 
+const getUserDetails = (userId, user) => {
+  const userDetails = user.find(
+    (each) => each._id.toString() == userId.toString()
+  );
+  const resp = {
+    userId,
+    userName: userDetails.userName,
+    profilePicture: userDetails.profilePicture,
+  };
+  return resp;
+};
+
 router.route("/").get(async (req, res) => {
   const { userId } = req;
   try {
@@ -32,7 +44,7 @@ router.route("/").get(async (req, res) => {
     const NormalizedFeed = feeds.feeds.map((each) => each._id._doc);
     const NewFeeds = NormalizedFeed.map((item) => ({
       ...item,
-      user: users.find((each) => each._id.toString() == item.uid.toString()),
+      user: getUserDetails(item.uid, users),
       uid: undefined,
     }));
     res.status(200).json({ success: true, feeds: NewFeeds });
