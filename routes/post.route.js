@@ -11,6 +11,47 @@ const router = express.Router();
 
 router.use(verifyToken);
 
+const getUserDetails = (userId, user) => {
+  const userDetails = user.find(
+    (each) => each._id.toString() == userId.toString()
+  );
+  const resp = {
+    userId,
+    userName: userDetails.userName,
+    profilePicture: userDetails.profilePicture,
+  };
+  return resp;
+};
+
+router.route("/suggestedposts").get(async (req, res) => {
+  const { userId } = req;
+  try {
+    let posts = await Post.find({});
+    const { following } = await User.findById(userId);
+    const users = await User.find({});
+    const CreatingFilteredPost = posts.filter(
+      (each) => each.uid.toString() !== userId.toString()
+    );
+    let SuggestedPosts = CreatingFilteredPost.map((item) => {
+      if (
+        following.some((each) => each._id.toString() == item.uid.toString())
+      ) {
+        return null;
+      }
+      return item;
+    });
+    SuggestedPosts = SuggestedPosts.filter((each) => each !== null);
+    SuggestedPosts = SuggestedPosts.map((each) => ({
+      ...each._doc,
+      user: getUserDetails(each.uid, users),
+      uid: undefined,
+    }));
+    res.status(200).json({ success: true, posts: SuggestedPosts });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
 router.route("/:postId").get(async (req, res) => {
   const { postId } = req.params;
   try {

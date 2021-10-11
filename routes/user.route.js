@@ -63,6 +63,36 @@ router
     }
   });
 
+router.route("/suggestedusers").get(async (req, res) => {
+  const { userId } = req;
+  try {
+    const users = await User.find({});
+    const { following } = await User.findById(userId);
+    const FilterOutSelf = users.filter(
+      (each) => each._id.toString() !== userId.toString()
+    );
+    let SuggestedUsers = FilterOutSelf.map((item) => {
+      if (
+        following.some((each) => each._id.toString() == item._id.toString())
+      ) {
+        return null;
+      }
+      return item;
+    });
+    SuggestedUsers = SuggestedUsers.filter((each) => each !== null);
+    SuggestedUsers = SuggestedUsers.map((each) => ({
+      profilePicture: each.profilePicture,
+      firstName: each.firstName,
+      lastName: each.lastName,
+      userName: each.userName,
+      _id: each._id,
+    }));
+    res.status(200).json({ success: true, SuggestedUsers });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+});
+
 router.route("/:userId").get(async (req, res) => {
   const { userId } = req.params;
   try {
